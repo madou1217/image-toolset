@@ -1,0 +1,11 @@
+{
+  "name": "image-toolset",
+  "version": "1.0.0",
+  "description": "图片工具集 — 包含图片拼接、变形等多种图片处理工具",
+  "scripts": {
+    "dev": "npx -y live-server --port=8080 .",
+    "start": "npx -y live-server --port=8080 ."
+  },
+  "keywords": ["image", "stitch", "tools", "canvas"],
+  "license": "MIT"
+}

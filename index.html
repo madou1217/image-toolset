@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片工具集 — Image Toolset</title>
+<meta name="description" content="精美的在线图片处理工具集，包含图片拼接、变形等多种功能">
+<link rel="stylesheet" href="css/common.css">
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(108,92,231,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(0,206,201,0.06) 0%, transparent 50%),
+      var(--bg-primary);
+  }
+
+  /* ─── Header ─── */
+  .header {
+    text-align: center;
+    padding: 80px 20px 40px;
+    max-width: 700px;
+  }
+
+  .header .logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6, #00cec9);
+    border-radius: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(108,92,231,0.3);
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .header .logo svg {
+    width: 42px;
+    height: 42px;
+    fill: #fff;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .header h1 {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .header p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ─── Tool grid ─── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 960px;
+    width: 100%;
+    padding: 0 24px 80px;
+  }
+
+  .tool-card {
+    display: block;
+    padding: 32px;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(108,92,231,0.1) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .tool-card:hover::before { opacity: 1; }
+
+  .tool-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .tool-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tool-icon.purple { background: linear-gradient(135deg, #6c5ce7, #8b5cf6); box-shadow: 0 4px 16px rgba(108,92,231,0.3); }
+  .tool-icon.teal { background: linear-gradient(135deg, #00cec9, #55efc4); box-shadow: 0 4px 16px rgba(0,206,201,0.3); }
+  .tool-icon.pink { background: linear-gradient(135deg, #fd79a8, #e84393); box-shadow: 0 4px 16px rgba(253,121,168,0.3); }
+  .tool-icon.amber { background: linear-gradient(135deg, #fdcb6e, #f39c12); box-shadow: 0 4px 16px rgba(253,203,110,0.3); }
+
+  .tool-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .tool-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .tool-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .tool-badge.ready {
+    background: rgba(0,206,201,0.15);
+    color: var(--success);
+    border: 1px solid rgba(0,206,201,0.3);
+  }
+
+  .tool-badge.soon {
+    background: rgba(253,203,110,0.12);
+    color: var(--warning);
+    border: 1px solid rgba(253,203,110,0.25);
+  }
+
+  .tool-card.coming-soon {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .tool-card .arrow {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    width: 24px;
+    height: 24px;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s;
+  }
+  .tool-card .arrow svg { fill: var(--accent-light); width: 24px; height: 24px; }
+  .tool-card:hover .arrow { opacity: 1; transform: translateX(0); }
+
+  /* ─── Footer ─── */
+  .footer {
+    padding: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+  </div>
+  <h1>图片工具集</h1>
+  <p>精美的在线图片处理工具，基于 Canvas API 打造<br>简单易用，功能强大</p>
+</div>
+
+<!-- Tool grid -->
+<div class="tool-grid">
+
+  <!-- Image Stitch Tool -->
+  <a href="tools/stitch.html" class="glass-card tool-card" id="tool-stitch">
+    <div class="tool-icon purple">
+      <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+    </div>
+    <h3>
+      图片拼接
+      <span class="tool-badge ready">可用</span>
+    </h3>
+    <p>可视化拖拽拼接，支持左右 / 上下拼接、边缘变形、等比缩放、撤销系统</p>
+    <div class="arrow"><svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+  </a>
+
+  <!-- Coming soon: Image Compress -->
+  <div class="glass-card tool-card coming-soon">
+    <div class="tool-icon teal">
+      <svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>
+    </div>
+    <h3>
+      图片压缩
+      <span class="tool-badge soon">即将推出</span>
+    </h3>
+    <p>智能压缩图片大小，保持最佳画质，支持批量处理</p>
+  </div>
+
+  <!-- Coming soon: Image Crop -->
+  <div class="glass-card tool-card coming-soon">
+    <div class="tool-icon pink">
+      <svg viewBox="0 0 24 24"><path d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2H7z"/></svg>
+    </div>
+    <h3>
+      图片裁剪
+      <span class="tool-badge soon">即将推出</span>
+    </h3>
+    <p>自由裁剪 / 固定比例裁剪，支持旋转和翻转</p>
+  </div>
+
+  <!-- Coming soon: Format Convert -->
+  <div class="glass-card tool-card coming-soon">
+    <div class="tool-icon amber">
+      <svg viewBox="0 0 24 24"><path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"/></svg>
+    </div>
+    <h3>
+      格式转换
+      <span class="tool-badge soon">即将推出</span>
+    </h3>
+    <p>PNG、JPG、WebP、GIF 等格式互转，支持批量操作</p>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  Image Toolset · 图片工具集 · Built with ❤️ and Canvas API
+</div>
+
+</body>
+</html>

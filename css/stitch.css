@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════
+   Stitch Tool — Specific Styles
+   ═══════════════════════════════════════════ */
+
+/* ─── Canvas area ─── */
+#canvas-wrap {
+  width: 100vw; height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(108,92,231,0.06) 0%, transparent 70%),
+    var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+/* ─── Drop overlay ─── */
+#drop-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  display: none;
+  align-items: center; justify-content: center;
+  background: rgba(15,15,26,0.85);
+  backdrop-filter: blur(8px);
+}
+#drop-overlay.active { display: flex; }
+#drop-overlay .inner {
+  padding: 60px 80px;
+  border: 2px dashed var(--accent-light);
+  border-radius: var(--radius-xl);
+  text-align: center;
+  animation: pulse-border 2s infinite;
+}
+#drop-overlay .inner svg { width: 64px; height: 64px; fill: var(--accent-light); margin-bottom: 16px; }
+#drop-overlay .inner p { font-size: 18px; color: var(--accent-light); font-weight: 600; }
+
+@keyframes pulse-border { 0%,100% { border-color: var(--accent-light); } 50% { border-color: var(--accent); } }
+
+/* ─── Empty state ─── */
+#empty-state {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+#empty-state.hidden { display: none; }
+#empty-state .inner { text-align: center; opacity: 0.5; }
+#empty-state .inner svg { width: 80px; height: 80px; fill: var(--text-secondary); margin-bottom: 20px; }
+#empty-state .inner p { font-size: 16px; color: var(--text-secondary); }
+#empty-state .inner p.sub { font-size: 13px; margin-top: 6px; }
+
+/* ─── Context menu ─── */
+#ctx-menu {
+  position: fixed; z-index: 4000; display: none;
+  min-width: 180px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  box-shadow: var(--shadow-lg);
+}
+#ctx-menu.show { display: block; }
+.ctx-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--text-secondary);
+  cursor: pointer; transition: all var(--transition-fast);
+}
+.ctx-item:hover { background: rgba(108,92,231,0.2); color: var(--text-primary); }
+.ctx-item.danger { color: var(--danger); }
+.ctx-item.danger:hover { background: rgba(253,121,168,0.15); }
+.ctx-sep { height: 1px; background: var(--border-glass); margin: 4px 8px; }
+
+/* ─── Mode indicator ─── */
+#mode-indicator {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+  padding: 6px 14px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex; gap: 12px; align-items: center;
+}
+#mode-indicator .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ─── Help panel ─── */
+#help-panel {
+  position: fixed; bottom: 16px; left: 16px; z-index: 1000;
+  padding: 12px 16px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  font-size: 11px; color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 260px;
+  opacity: 0.7;
+  transition: opacity var(--transition-normal);
+}
+#help-panel:hover { opacity: 1; }
+#help-panel kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  font-family: 'Inter', monospace;
+  font-size: 10px;
+}
+
+/* ─── Stitch-specific body ─── */
+body.stitch-page {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+}

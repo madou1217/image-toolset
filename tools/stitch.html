@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片拼接工具 — 图片工具集</title>
+<meta name="description" content="可视化拖拽图片拼接工具，支持左右拼接、上下拼接、边缘变形和等比缩放">
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/stitch.css">
+</head>
+<body class="stitch-page">
+
+<!-- Back button -->
+<a href="../index.html" class="back-btn">
+  <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+  返回工具集
+</a>
+
+<!-- Toolbar -->
+<div id="toolbar" class="toolbar">
+  <button class="tb-btn primary" id="btn-add" title="添加图片">
+    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    添加图片
+  </button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-stitch-h" title="水平拼接选中图片">
+    <svg viewBox="0 0 24 24"><path d="M16 13h-3V3h-2v10H8l4 4 4-4zM4 19v2h16v-2H4z" transform="rotate(-90 12 12)"/></svg>
+    左右拼接
+  </button>
+  <button class="tb-btn" id="btn-stitch-v" title="垂直拼接选中图片">
+    <svg viewBox="0 0 24 24"><path d="M16 13h-3V3h-2v10H8l4 4 4-4zM4 19v2h16v-2H4z"/></svg>
+    上下拼接
+  </button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-deform-toggle" title="切换变形模式">
+    <svg viewBox="0 0 24 24"><path d="M3 3v2h2V3H3zm4 0v2h2V3H7zm4 0v2h2V3h-2zm4 0v2h2V3h-2zm4 0v2h2V3h-2zM3 7v2h2V7H3zm16 0v2h2V7h-2zM3 11v2h2v-2H3zm16 0v2h2v-2h-2zM3 15v2h2v-2H3zm16 0v2h2v-2h-2zM3 19v2h2v-2H3zm4 0v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"/></svg>
+    变形模式
+  </button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-select-all" title="全选">全选</button>
+  <button class="tb-btn danger" id="btn-delete" title="删除选中">
+    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+    删除
+  </button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-undo" title="撤销 (Ctrl+Z)">
+    <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+    撤销
+  </button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn primary" id="btn-export" title="导出拼接结果">
+    <svg viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+    导出 PNG
+  </button>
+</div>
+
+<!-- Hidden file input -->
+<input type="file" id="file-input" multiple accept="image/*" style="display:none">
+
+<!-- Canvas -->
+<div id="canvas-wrap">
+  <canvas id="canvas"></canvas>
+</div>
+
+<!-- Empty state -->
+<div id="empty-state">
+  <div class="inner">
+    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+    <p>拖拽图片到此处，或点击上方「添加图片」</p>
+    <p class="sub">支持 JPG / PNG / WebP 等常见格式</p>
+  </div>
+</div>
+
+<!-- Drop overlay -->
+<div id="drop-overlay">
+  <div class="inner">
+    <svg viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z" transform="rotate(180 12 12)"/></svg>
+    <p>松开以添加图片</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- Context menu -->
+<div id="ctx-menu">
+  <div class="ctx-item" data-action="front">置于顶层</div>
+  <div class="ctx-item" data-action="back">置于底层</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" data-action="reset-deform">重置变形</div>
+  <div class="ctx-item" data-action="fit">适应画布</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" data-action="delete">删除</div>
+</div>
+
+<!-- Mode indicator -->
+<div id="mode-indicator">
+  <span class="dot"></span>
+  <span id="mode-text">缩放模式</span>
+  <span>|</span>
+  <span id="img-count">0 张图片</span>
+</div>
+
+<!-- Help panel -->
+<div id="help-panel">
+  <kbd>Shift</kbd> + 点击 — 多选<br>
+  <kbd>Ctrl/⌘</kbd> + <kbd>A</kbd> — 全选<br>
+  <kbd>Ctrl/⌘</kbd> + <kbd>Z</kbd> — 撤销<br>
+  <kbd>Delete</kbd> — 删除选中<br>
+  <kbd>D</kbd> — 切换变形模式<br>
+  滚轮 — 缩放画布<br>
+  中键拖拽 — 平移画布
+</div>
+
+<script type="module" src="../js/stitch/app.js"></script>
+</body>
+</html>
