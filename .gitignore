@@ -6,3 +6,5 @@ node_modules/
 !assets/**/*.png
 !assets/**/*.jpg
 .env
+scripts/ssl_cert/
+scripts/image.meadeo.com.zip
