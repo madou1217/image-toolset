@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片压缩 — 图片工具集</title>
+<meta name="description" content="在线图片压缩工具，调节质量、实时预览大小，支持批量处理">
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/compress.css">
+</head>
+<body class="compress-page">
+
+<!-- Back button -->
+<a href="../index.html" class="back-btn">
+  <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+  返回工具集
+</a>
+
+<!-- Upload Area -->
+<div id="upload-area" class="upload-area">
+  <div class="icon">
+    <svg viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z" transform="rotate(180 12 12)"/></svg>
+  </div>
+  <h2>拖拽图片到此处</h2>
+  <p>或点击选择文件 · 支持 JPG / PNG / WebP</p>
+</div>
+
+<!-- Hidden file input -->
+<input type="file" id="file-input" multiple accept="image/*" style="display:none">
+
+<!-- Workspace (shown after adding images) -->
+<div id="workspace" class="workspace">
+
+  <!-- Controls -->
+  <div class="controls-bar">
+    <label>压缩质量</label>
+    <input type="range" id="quality-slider" class="quality-slider" min="0.1" max="1" step="0.05" value="0.7">
+    <span id="quality-value" class="quality-value">70%</span>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" id="btn-add-more">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      添加更多
+    </button>
+    <button class="tb-btn primary" id="btn-download-all">
+      <svg viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+      全部下载
+    </button>
+  </div>
+
+  <!-- Image Grid -->
+  <div id="image-list" class="image-list"></div>
+
+  <!-- Summary -->
+  <div class="summary-bar">
+    <div class="stats">
+      <span>原始: <strong id="total-original">0 B</strong></span>
+      <span>压缩后: <strong id="total-compressed">0 B</strong></span>
+      <span>节省: <span class="highlight" id="total-savings">0%</span></span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script type="module" src="../js/compress/app.js"></script>
+</body>
+</html>
