@@ -1,0 +1,24 @@
+name: Deploy to Servers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server: [SERVER_1, SERVER_2]
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets[format('{0}_HOST', matrix.server)] }}
+          username: ${{ secrets[format('{0}_USER', matrix.server)] }}
+          key: ${{ secrets[format('{0}_KEY', matrix.server)] }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            sudo git pull origin main
+            echo "✅ Deployed at $(date)"
